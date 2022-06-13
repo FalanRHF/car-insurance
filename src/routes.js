@@ -4,20 +4,13 @@ import RegisterLayout from './pages/RegisterLayout'
 import PersonalDetails from './pages/PersonalDetails'
 import CarDetails from './pages/CarDetails'
 import RegisterSuccess from './pages/RegisterSuccess'
-// import About from './pages/About'
-
-const FirstPage = () => {
-  const first_page = "home"
-
-  return <Navigate to={"" + first_page} replace={true} />
-}
 
 const Router = () => {
 
   const contents = useRoutes([
     {
       path: '/',
-      element: <FirstPage />,
+      element: <Navigate to="/home" replace={true} />,
     },
     {
       path: 'home',

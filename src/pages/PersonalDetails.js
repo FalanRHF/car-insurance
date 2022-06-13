@@ -5,14 +5,19 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { setForm } from '../redux/reducers/form'
-import { Container } from '@mui/system'
+import { Container } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 
 
 const PersonalDetails = () => {
   const initialValues = useSelector(state => state.form.value.personalDetails)
   // const [formValues, setFormValues] = useState(initialValues === undefined ? { firstName: '', lastName: '', DOB: '', email: '' } : initialValues)
+  let todayMinus18Years = new Date()
+  todayMinus18Years.setFullYear(todayMinus18Years.getFullYear() - 18)
+  let todayMinus100Years = new Date()
+  todayMinus100Years.setFullYear(todayMinus100Years.getFullYear() - 100)
 
+  const [dateDifference, setDateDifference] = useState(0)
   const isRegistering = useSelector(state => state.session.value.isRegistering)
   const { register, handleSubmit, control, formState: { errors } } = useForm({ defaultValues: initialValues });
 
@@ -24,6 +29,7 @@ const PersonalDetails = () => {
     if (!isRegistering) {
       isSessionExpired()
     }
+
     return () => {
       console.log("Personal details unmounted")
     }
@@ -48,9 +54,18 @@ const PersonalDetails = () => {
   //   setFormValues({ ...formValues, [name]: value })
   // }
 
-  const regexForEmail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+  // const regexForEmail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 
-  // console.log(formValues)
+  const regexForEmail = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
+
+  //86400000
+
+  const calculateDateDifference = (date) => {
+    const DOB = new Date(date)
+    const today = new Date()
+    const difference = ((today.getFullYear() * 10000) + ((today.getMonth() + 1) * 100) + today.getDate()) - ((DOB.getFullYear() * 10000) + ((DOB.getMonth() + 1) * 100) + DOB.getDate())
+    setDateDifference(difference)
+  }
 
   return (
     <>
@@ -61,7 +76,10 @@ const PersonalDetails = () => {
             <Stack spacing={1}>
               <Grid container justifyContent='center'>
                 <Grid item xs={12} sm={4} sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography>First Name*</Typography>
+                  <Stack direction="row" justifyContent="flex-start">
+                    <Typography>First Name</Typography>
+                    <Typography color="red">*</Typography>
+                  </Stack>
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <TextField
@@ -75,7 +93,10 @@ const PersonalDetails = () => {
               </Grid>
               <Grid container>
                 <Grid item xs={12} sm={4} sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography alignSelf='center'>Last Name*</Typography>
+                  <Stack direction="row" justifyContent="flex-start">
+                    <Typography>Last Name</Typography>
+                    <Typography color="red">*</Typography>
+                  </Stack>
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <TextField
@@ -89,7 +110,10 @@ const PersonalDetails = () => {
               </Grid>
               <Grid container>
                 <Grid item xs={12} sm={4} sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography alignSelf='center'>Date of Birth*</Typography>
+                  <Stack direction="row" justifyContent="flex-start">
+                    <Typography>Date of Birth</Typography>
+                    <Typography color="red">*</Typography>
+                  </Stack>
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <Controller
@@ -103,20 +127,37 @@ const PersonalDetails = () => {
                         value={field?.value}
                         toolbarPlaceholder="DD/MM/YYYY"
                         // onChange={(value) => handleDateChange("DOB", value.toISOString())}
-                        onChange={(value) => field.onChange(value.toISOString())}
+                        onChange={(value) => {
+
+                          field.onChange(value.toISOString())
+                        }}
                         renderInput={(params) =>
+                          // <TextField {...params} error={!!error} helperText={!!error ? error?.message : (dateDifference < 180000 ? 'Must be more than 18 years old' : (dateDifference > 1000000 ? ' Must be less than 100 years old' : ''))} />
                           <TextField {...params} error={!!error} helperText={error?.message} />
                         }
                       />
                     )}
-                    rules={{ required: "Field is required." }}
+                    rules={{
+                      required: "Field is required.",
+                      max: {
+                        value: todayMinus18Years.toISOString(),
+                        message: "Age must be more than 18 years."
+                      },
+                      min: {
+                        value: todayMinus100Years.toISOString(),
+                        message: "Age must be less than 100 years."
+                      }
+                    }}
                     defaultValue=""
                   />
                 </Grid>
               </Grid>
               <Grid container>
                 <Grid item xs={12} sm={4} sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography alignSelf='center'>Email*</Typography>
+                  <Stack direction="row" justifyContent="flex-start">
+                    <Typography>Email</Typography>
+                    <Typography color="red">*</Typography>
+                  </Stack>
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <TextField

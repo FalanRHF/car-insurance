@@ -1,14 +1,6 @@
-import React, { useState } from 'react'
-import { Box, Container, Grid, Paper, Stack } from '@mui/material'
+import React from 'react'
+import { Container, Grid, Paper, Stack } from '@mui/material'
 import { Outlet } from 'react-router-dom'
-
-// import PersonalDetails from './PersonalDetails'
-// import CarDetails from './CarDetails'
-
-
-// const steps = ['Enter personal details', 'Enter car details']
-// just add into the steps array and it auto add step
-// const stepperContents = [<PersonalDetails />, <CarDetails />]
 
 const RegisterLayout = () => {
   return (

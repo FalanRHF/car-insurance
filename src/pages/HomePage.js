@@ -1,7 +1,7 @@
 // import { Container } from "@mui/material"
 // import { Link as RouterLink } from "react-router-dom"
 import React, { useEffect } from 'react'
-import { Button } from "@mui/material"
+import { Button, Container, Stack, Paper } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { setSession } from "../redux/reducers/session"
@@ -23,17 +23,18 @@ const Home = () => {
     navigate('/register', { replace: false })
   }
 
-  const setIsRegistering = () => {
-    return new Promise((resolve) => {
-      dispatch(setSession({ isRegistering: true }))
-      resolve(true)
-    })
-  }
-
   return (
     <>
-      <h1>CAR INSURANCE APPLICATION</h1>
-      <Button onClick={() => toRegister()}>REGISTER</Button>
+      <Container sx={{ height: '100vh' }}>
+        <Stack direction="column" height={1} justifyContent='center'>
+          <Paper elevation={10} sx={{ height: { md: '70%' }, borderRadius: '20px' }}>
+            <Stack direction="column" height={1} alignItems="center" justifyContent="center">
+              <h1>CAR INSURANCE APPLICATION</h1>
+              <Button onClick={() => toRegister()}>REGISTER</Button>
+            </Stack>
+          </Paper>
+        </Stack>
+      </Container>
     </>
   )
 }
